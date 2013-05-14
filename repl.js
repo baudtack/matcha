@@ -4,7 +4,9 @@ function Symbol(s) {
 
 
 function tokenize(s) {
-    return s.replace('(', '( ').replace(')', ' )').split(' ');
+    return s.replace(/\(/g, ' ( ').replace(/\)/g, ' )').split(' ').filter(function (item) {
+        return item != '';
+        });
 }
 
 function atomize(item) {
@@ -22,12 +24,13 @@ function parse(tokens, tree) {
     if (tokens.length == 0) {
         throw "End of file during parsing";
     }
+
     token = tokens.shift();
     if (token == '(') {
-
-        while (tokens[0] != ')'){
-            tree.push(parse(tokens, tree));
+        while (tokens[0] != ')') {
+            tree.push(parse(tokens, []));
         }
+        tokens.shift();
         return tree;
     } else if (token == ')') {
         throw "Parse error";
@@ -40,7 +43,4 @@ function parse(tokens, tree) {
 function read(s) {
     return parse(tokenize(s), []);
 }
-
-
-console.log(read('(alert (foo "test"))'));
 

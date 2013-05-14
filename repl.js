@@ -19,6 +19,25 @@ function Symbol(s) {
     this.s = s;
 }
 
+function Env(outer) {
+    this.outer = outer;
+    this.local = [];
+    this.lookup = function(symbol) {
+        if (typeof this.local[symbol.s] == 'undefined') {
+            if (typeof this.outer == 'undefined') {
+                return eval(symbol.s);
+            } else {
+                return this.outer.lookup(symbol);
+            }
+        } else {
+            return this.local[symbol.s];
+        }
+    }
+    this.set = function(symbol, value) {
+        this.local[symbol.s] = value;
+    }
+}
+
 function tokenize(s) {
     return s.replace(/\(/g, ' ( ').replace(/\)/g, ' )').split(' ').filter(function (item) {
         return item != '';
@@ -58,4 +77,39 @@ function parse(tokens, tree) {
 
 function read(s) {
     return parse(tokenize(s), []);
+}
+
+
+function evaluate(s, env) {
+    if (s instanceof Symbol) {
+        return env.lookup(s);
+    } else if(!(s instanceof Array)) {
+        return s;
+    } else if(s.length == 1) {
+        return evaluate(s[0], env);
+    } else if(s[0].s == 'define') {
+        s.shift();
+        symbol = s.shift();
+        env.set(symbol, evaluate(s, env));
+    } else if (s[0].s == 'if') {
+        return evaluate( (evaluate(s[1], env) ? s[2] : s[3]), env);
+    // the below is seriously gross.
+    } else if(s[0].s == '=' ||
+              s[0].s == '==' ||
+              s[0].s == '>' ||
+              s[0].s == '>=' ||
+              s[0].s == '<' ||
+              s[0].s == '<=' ||
+              s[0].s == '&&' ||
+              s[0].s == '||' ||
+              s[0].s == '+' ||
+              s[0].s == '-' ||
+              s[0].s == '*' ||
+              s[0].s == '/') {
+        //maybe move this into Symbol
+        if(s[0].s == '=') {
+            s[0].s = '==';
+        }
+        return eval(evaluate(s[1], env) + s[0].s + evaluate(s[2], env));
+    }
 }

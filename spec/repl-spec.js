@@ -37,3 +37,221 @@ describe("read()", function() {
                            ]);
     });
 });
+
+describe('Env()', function() {
+    it('can set()', function() {
+        e = new Env();
+        e.set(new Symbol('x'), 42);
+        expect(e.local['x']).toBe(42);
+    });
+
+    it('can lookup()', function() {
+        e = new Env();
+        e.set(new Symbol('x'), 42);
+        expect(e.lookup(new Symbol('x'))).toBe(42);
+
+    });
+});
+
+describe('evaluate()', function() {
+    it('can do lookups into javascript', function() {
+        expect(evaluate(new Symbol('eval'), new Env())).toEqual(eval);
+    });
+
+    it('can evaluate numbers', function () {
+        expect(evaluate(42)).toBe(42);
+    });
+
+    it('can evaluate define', function () {
+        e = new Env();
+        x = new Symbol('x');
+        evaluate([new Symbol('define'), x, 42], e);
+        expect(e.lookup(x)).toBe(42);
+    });
+
+   it("can evaluate true if expressions", function() {
+       expect(evaluate([new Symbol('if'),
+                        [new Symbol('true')],
+                        new Symbol('true'),
+                        new Symbol('false')],
+                       new Env())).toBe(true);
+   });
+
+    it("can evaluate true if expressions with the == operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('=='), new Symbol('true'), new Symbol('true')],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it("can evaluate true if expressions with the = operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('='), new Symbol('true'), new Symbol('true')],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+   it("can evaluate false if expressions", function() {
+       expect(evaluate([new Symbol('if'),
+                        [new Symbol('false')],
+                        new Symbol('true'),
+                        new Symbol('false')],
+                       new Env())).toBe(false);
+   });
+
+    it("can evaluate false if expressions with the == operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('=='), new Symbol('false'), new Symbol('true')],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it("can evaluate false if expressions with the = operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('='), new Symbol('false'), new Symbol('true')],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it("can evaluate true if expressions with the > operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('>'), 2, 1],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+    it("can evaluate false if expressions with the > operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('>'), 1, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it("can evaluate true if expressions with the < operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('<'), 1, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it("can evaluate false if expressions with the < operator", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('<'), 2, 1],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it("can evaluate true if expressions with the >= operator with 2 and 1", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('>='), 2, 1],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it("can evaluate true if expressions with the >= operator with 2 and 2", function() {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('>='), 2, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate false if expressions with the >= operator with 1 and 2', function () {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('>='), 1, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it('can evaluate true if expressions with the <= operator with 1 and 2', function () {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('<='), 1, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate true if expressions with the <= operator with 2 and 2', function () {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('<='), 2, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate false if expressions with the <= operator with 3 and 2', function () {
+        expect(evaluate([new Symbol('if'),
+                         [new Symbol('<='), 3, 2],
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it('can evaluate true &&', function () {
+        expect(evaluate([new Symbol('&&'),
+                         new Symbol('true'),
+                         new Symbol('true')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate false && no short curcuit', function () {
+        expect(evaluate([new Symbol('&&'),
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it('can evaluate false && short ciruit', function () {
+        expect(evaluate([new Symbol('&&'),
+                         new Symbol('false'),
+                         new Symbol('true')],
+                        new Env())).toBe(false);
+    });
+
+    it('can evaluate true || no short circuit', function () {
+        expect(evaluate([new Symbol('||'),
+                         new Symbol('false'),
+                         new Symbol('true')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate true || short circuit', function () {
+        expect(evaluate([new Symbol('||'),
+                         new Symbol('true'),
+                         new Symbol('false')],
+                        new Env())).toBe(true);
+    });
+
+    it('can evaluate false ||', function () {
+        expect(evaluate([new Symbol('||'),
+                         new Symbol('false'),
+                         new Symbol('false')],
+                        new Env())).toBe(false);
+    });
+
+    it("can evaluate +", function() {
+        expect(evaluate([new Symbol('+'), 41, 1], new Env())).toBe(42);
+    });
+
+    it("can evaluate -", function() {
+        expect(evaluate([new Symbol('-'), 43, 1], new Env())).toBe(42);
+    });
+
+    it("can evaluate *", function() {
+        expect(evaluate([new Symbol('*'), 42, 2], new Env())).toBe(84);
+    });
+
+    it("can evaluate /", function() {
+        expect(evaluate([new Symbol('/'), 84, 2], new Env())).toBe(42);
+    });
+
+});

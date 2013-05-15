@@ -45,6 +45,7 @@ function tokenize(s) {
 }
 
 function atomize(item) {
+    //need to add float support
     ip = parseInt(item)
     if (isNaN(ip) == false) {
         return ip;
@@ -72,12 +73,29 @@ function parse(tokens, tree) {
     } else {
         return atomize(token);
     }
-    
+
 }
 
 function read(s) {
     return parse(tokenize(s), []);
 }
+
+var BinaryOps = {};
+BinaryOps['='] = '==';
+BinaryOps['=='] = '==';
+BinaryOps['==='] = '===';
+BinaryOps['>'] = '>';
+BinaryOps['>='] = '>=';
+BinaryOps['<'] = '<';
+BinaryOps['<='] = '<=';
+BinaryOps['&&'] = '&&';
+BinaryOps['and'] = '&&';
+BinaryOps['||'] = '||';
+BinaryOps['or'] = '||';
+BinaryOps['+'] = '+';
+BinaryOps['-'] = '-';
+BinaryOps['*'] = '*';
+BinaryOps['/'] = '/';
 
 
 function evaluate(s, env) {
@@ -93,23 +111,7 @@ function evaluate(s, env) {
         env.set(symbol, evaluate(s, env));
     } else if (s[0].s == 'if') {
         return evaluate( (evaluate(s[1], env) ? s[2] : s[3]), env);
-    // the below is seriously gross.
-    } else if(s[0].s == '=' ||
-              s[0].s == '==' ||
-              s[0].s == '>' ||
-              s[0].s == '>=' ||
-              s[0].s == '<' ||
-              s[0].s == '<=' ||
-              s[0].s == '&&' ||
-              s[0].s == '||' ||
-              s[0].s == '+' ||
-              s[0].s == '-' ||
-              s[0].s == '*' ||
-              s[0].s == '/') {
-        //maybe move this into Symbol
-        if(s[0].s == '=') {
-            s[0].s = '==';
-        }
-        return eval(evaluate(s[1], env) + s[0].s + evaluate(s[2], env));
+    } else if(typeof BinaryOps[s[0].s] != 'undefined') {
+        return eval(evaluate(s[1], env) + BinaryOps[s[0].s] + evaluate(s[2], env));
     }
 }

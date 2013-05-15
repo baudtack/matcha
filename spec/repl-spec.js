@@ -8,9 +8,11 @@ describe("read()", function() {
     it('reads simple sexp', function() {
         expect(read('(alert "test")')).toEqual([ { s: 'alert' }, 'test' ]);
     });
+
     it('reads nested sexp', function() {
         expect(read('(alert (foo "bar"))')).toEqual([ { s: 'alert' }, [ { s: 'foo' }, 'bar' ] ]);
     });
+
     it('reads complex sexp', function() {
         expect(read('(define factorial (lambda(n) (if (= n 0) 1 (* n (factorial (- n 1))))))')).toEqual(
                            [ { s: 'define' },

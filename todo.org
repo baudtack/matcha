@@ -1,0 +1,8 @@
+* evaluate()
+** TODO cond
+** TODO lambda
+** TODO set!
+** TODO begin
+** TODO proc calls
+* tests
+** TODO write tests that combine read and() evaluate()

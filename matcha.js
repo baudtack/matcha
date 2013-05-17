@@ -80,22 +80,23 @@ function read(s) {
     return parse(tokenize(s), []);
 }
 
-var BinaryOps = {};
-BinaryOps['='] = '==';
-BinaryOps['=='] = '==';
-BinaryOps['==='] = '===';
-BinaryOps['>'] = '>';
-BinaryOps['>='] = '>=';
-BinaryOps['<'] = '<';
-BinaryOps['<='] = '<=';
-BinaryOps['&&'] = '&&';
-BinaryOps['and'] = '&&';
-BinaryOps['||'] = '||';
-BinaryOps['or'] = '||';
-BinaryOps['+'] = '+';
-BinaryOps['-'] = '-';
-BinaryOps['*'] = '*';
-BinaryOps['/'] = '/';
+var BuiltinBinaryOps = {
+'=': '==',
+'==': '==',
+'===': '===',
+'>': '>',
+'>=': '>=',
+'<': '<',
+'<=': '<=',
+'&&': '&&',
+'and': '&&',
+'||': '||',
+'or': '||',
+'+': '+',
+'-': '-',
+'*': '*',
+'/': '/'
+};
 
 
 function evaluate(s, env) {
@@ -110,8 +111,8 @@ function evaluate(s, env) {
         symbol = s.shift();
         env.set(symbol, evaluate(s, env));
     } else if (s[0].s == 'if') {
-        return evaluate( (evaluate(s[1], env) ? s[2] : s[3]), env);
-    } else if(typeof BinaryOps[s[0].s] != 'undefined') {
-        return eval(evaluate(s[1], env) + BinaryOps[s[0].s] + evaluate(s[2], env));
+        return evaluate((evaluate(s[1], env) ? s[2] : s[3]), env);
+    } else if(typeof BuiltinBinaryOps[s[0].s] != 'undefined') {
+        return eval(evaluate(s[1], env) + BuiltinBinaryOps[s[0].s] + evaluate(s[2], env));
     }
 }

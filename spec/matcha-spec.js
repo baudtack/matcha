@@ -256,4 +256,8 @@ describe('evaluate()', function() {
         expect(evaluate([new Symbol('/'), 84, 2], new Env())).toBe(42);
     });
 
+    it("can quote", function() {
+        expect(evaluate([new Symbol('quote'), [10, 12]])).toEqual([10, 12]);
+    });
+
 });

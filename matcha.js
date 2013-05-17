@@ -106,6 +106,8 @@ function evaluate(s, env) {
         return s;
     } else if(s.length == 1) {
         return evaluate(s[0], env);
+    } else if(s[0].s == 'quote') {
+        return s[1];
     } else if(s[0].s == 'define') {
         s.shift();
         symbol = s.shift();

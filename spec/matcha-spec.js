@@ -257,7 +257,10 @@ describe('evaluate()', function() {
     });
 
     it("can quote", function() {
-        expect(evaluate([new Symbol('quote'), [10, 12]])).toEqual([10, 12]);
+        expect(evaluate([new Symbol('quote'), [10, 12]], new Env())).toEqual([10, 12]);
     });
 
+    it("can evaluate lambda", function() {
+        expect(evaluate([new Symbol('lambda'), [new Symbol('x')], [new Symbol('*'), new Symbol('x'), new Symbol('x')]], new Env())(2)).toBe(4);
+    });
 });

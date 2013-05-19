@@ -116,5 +116,20 @@ function evaluate(s, env) {
         return evaluate((evaluate(s[1], env) ? s[2] : s[3]), env);
     } else if(typeof BuiltinBinaryOps[s[0].s] != 'undefined') {
         return eval(evaluate(s[1], env) + BuiltinBinaryOps[s[0].s] + evaluate(s[2], env));
+    } else if(s[0].s == 'lambda') {
+        var f = function(arr) {
+            var arg_list = '';
+            var arg_set = '';
+            for(var i = 0; i < arr.length; i++) {
+                arg_list = arg_list + arr[i].s + ', ';
+                arg_set = arg_set + 'env.set(new Symbol("' + arr[i].s + '"), ' + arr[i].s + '); ';
+            }
+            return  [ arg_list.slice(0, -2) , arg_set];
+        };
+
+        args = f(s[1]);
+        var q = "function matcha_lambda(body, env) { return function(" + args[0] + ") { " + args[1] + " return evaluate(body, env); };  }";
+        eval(q);
+        return matcha_lambda(s[2], env);
     }
 }

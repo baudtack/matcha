@@ -2,6 +2,5 @@
 ** TODO cond
 ** TODO set!
 ** TODO begin
-** TODO proc calls
 * tests
 ** TODO write tests that combine read and() evaluate()

@@ -263,4 +263,10 @@ describe('evaluate()', function() {
     it("can evaluate lambda", function() {
         expect(evaluate([new Symbol('lambda'), [new Symbol('x')], [new Symbol('*'), new Symbol('x'), new Symbol('x')]], new Env())(2)).toBe(4);
     });
+
+    it("can evaluate nested lambda", function() {
+        expect(evaluate([new Symbol('lambda'), [new Symbol('x')], 
+                         [new Symbol('lambda'), [new Symbol('y')],
+                          [new Symbol('*'), new Symbol('x'), new Symbol('y')]]], new Env())(2)(5)).toBe(10);
+    });
 });

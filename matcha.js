@@ -98,6 +98,15 @@ var BuiltinBinaryOps = {
 '/': '/'
 };
 
+function make_lambda(env, arglist, body) {
+    return function() {
+        var args = Array.prototype.slice.call(arguments, 0);
+        for (var i = 0; i < args.length; i++) {
+            env.set(arglist[i], args[i]);
+        }
+        return evaluate(body, env);
+    }
+}
 
 function evaluate(s, env) {
     if (s instanceof Symbol) {
@@ -117,19 +126,6 @@ function evaluate(s, env) {
     } else if(typeof BuiltinBinaryOps[s[0].s] != 'undefined') {
         return eval(evaluate(s[1], env) + BuiltinBinaryOps[s[0].s] + evaluate(s[2], env));
     } else if(s[0].s == 'lambda') {
-        var f = function(arr) {
-            var arg_list = '';
-            var arg_set = '';
-            for(var i = 0; i < arr.length; i++) {
-                arg_list = arg_list + arr[i].s + ', ';
-                arg_set = arg_set + 'env.set(new Symbol("' + arr[i].s + '"), ' + arr[i].s + '); ';
-            }
-            return  [ arg_list.slice(0, -2) , arg_set];
-        };
-
-        args = f(s[1]);
-        var q = "function matcha_lambda(body, env) { return function(" + args[0] + ") { " + args[1] + " return evaluate(body, env); };  }";
-        eval(q);
-        return matcha_lambda(s[2], env);
+        return make_lambda(env, s[1], s[2]);
     }
 }

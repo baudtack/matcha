@@ -1,6 +1,5 @@
 * evaluate()
 ** TODO cond
-** TODO improve lambda
 ** TODO set!
 ** TODO begin
 ** TODO proc calls

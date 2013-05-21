@@ -269,4 +269,10 @@ describe('evaluate()', function() {
                          [new Symbol('lambda'), [new Symbol('y')],
                           [new Symbol('*'), new Symbol('x'), new Symbol('y')]]], new Env())(2)(5)).toBe(10);
     });
+
+    it("can call a function", function() {
+        var e = new Env();
+        e.set(new Symbol('square'), [new Symbol('lambda'), [new Symbol('x')], [new Symbol('*'), new Symbol('x'), new Symbol('x')]]);
+        expect(evaluate([new Symbol('square'), 2], e)).toBe(4);
+    });
 });

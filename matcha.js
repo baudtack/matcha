@@ -38,6 +38,36 @@ function Env(outer) {
     }
 }
 
+
+function ops_with_multiple_args(op) {
+    return function () {
+        var args = Array.prototype.slice.call(arguments, 0);
+        var collector = args.shift();
+        for (var i = 0; i < args.length; i++) {
+            collector = op(collector, args[i]);
+        }
+        return collector;
+    };
+}
+
+var GlobalEnv = new Env();
+GlobalEnv.set(new Symbol('='), function(x, y) { return x === y; });
+GlobalEnv.set(new Symbol('=='), GlobalEnv.lookup(new Symbol('=')));
+GlobalEnv.set(new Symbol('==='), GlobalEnv.lookup(new Symbol('=')));
+GlobalEnv.set(new Symbol('>'), function(x, y) { return x > y; });
+GlobalEnv.set(new Symbol('>='), function(x, y) { return x >= y; });
+GlobalEnv.set(new Symbol('<'), function(x, y) { return x < y; });
+GlobalEnv.set(new Symbol('<='), function(x, y) { return x <= y; });
+GlobalEnv.set(new Symbol('and'), function(x, y) { return x && y; });
+GlobalEnv.set(new Symbol('&&'), function(x, y) { return x && y; });
+GlobalEnv.set(new Symbol('or'), function(x, y) { return x || y; });
+GlobalEnv.set(new Symbol('||'), function(x, y) { return x || y; });
+GlobalEnv.set(new Symbol('+'), ops_with_multiple_args(function(x, y) { return x + y; }));
+GlobalEnv.set(new Symbol('-'), ops_with_multiple_args(function(x, y) { return x - y; }));
+GlobalEnv.set(new Symbol('*'), ops_with_multiple_args(function(x, y) { return x * y; }));
+GlobalEnv.set(new Symbol('/'), ops_with_multiple_args(function(x, y) { return x / y; }));
+
+
 function tokenize(s) {
     return s.replace(/\(/g, ' ( ').replace(/\)/g, ' )').split(' ').filter(function (item) {
         return item != '';
@@ -80,24 +110,6 @@ function read(s) {
     return parse(tokenize(s), []);
 }
 
-var BuiltinBinaryOps = {
-'=': '==',
-'==': '==',
-'===': '===',
-'>': '>',
-'>=': '>=',
-'<': '<',
-'<=': '<=',
-'&&': '&&',
-'and': '&&',
-'||': '||',
-'or': '||',
-'+': '+',
-'-': '-',
-'*': '*',
-'/': '/'
-};
-
 function make_lambda(env, arglist, body) {
     return function() {
         var args = Array.prototype.slice.call(arguments, 0);
@@ -109,6 +121,8 @@ function make_lambda(env, arglist, body) {
 }
 
 function evaluate(s, env) {
+    if(typeof env === 'undefined') env = GlobalEnv;
+
     if (s instanceof Symbol) {
         return env.lookup(s);
     } else if(!(s instanceof Array)) {
@@ -123,8 +137,6 @@ function evaluate(s, env) {
         env.set(symbol, evaluate(s, env));
     } else if (s[0].s == 'if') {
         return evaluate((evaluate(s[1], env) ? s[2] : s[3]), env);
-    } else if(typeof BuiltinBinaryOps[s[0].s] != 'undefined') {
-        return eval(evaluate(s[1], env) + BuiltinBinaryOps[s[0].s] + evaluate(s[2], env));
     } else if(s[0].s == 'lambda') {
         return make_lambda(env, s[1], s[2]);
     }  else if(s[0].s == 'begin') {

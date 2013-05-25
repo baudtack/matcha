@@ -127,6 +127,13 @@ function evaluate(s, env) {
         return eval(evaluate(s[1], env) + BuiltinBinaryOps[s[0].s] + evaluate(s[2], env));
     } else if(s[0].s == 'lambda') {
         return make_lambda(env, s[1], s[2]);
+    }  else if(s[0].s == 'begin') {
+        s.shift();
+        var ret = null;
+        for (var i = 0; i < s.length; i++) {
+            ret = evaluate(s[i], env);
+        }
+        return ret;
     } else {
         proc = s.shift();
         return evaluate(env.lookup(proc), env).apply(null, s);

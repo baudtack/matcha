@@ -1,6 +1,5 @@
 * evaluate()
 ** TODO cond
 ** TODO set!
-** TODO begin
 * tests
 ** TODO write tests that combine read and() evaluate()

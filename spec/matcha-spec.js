@@ -275,4 +275,8 @@ describe('evaluate()', function() {
         e.set(new Symbol('square'), [new Symbol('lambda'), [new Symbol('x')], [new Symbol('*'), new Symbol('x'), new Symbol('x')]]);
         expect(evaluate([new Symbol('square'), 2], e)).toBe(4);
     });
+
+    it("can evaluate begin", function() {
+        expect(evaluate([new Symbol('begin'), [new Symbol('define'), new Symbol('x'), 42], [new Symbol('*'), new Symbol('x'), 2]], new Env())).toBe(84);
+    });
 });

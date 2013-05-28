@@ -269,6 +269,12 @@ describe('evaluate()', function() {
         expect(evaluate([new Symbol('square'), 2])).toBe(4);
     });
 
+    it("can call a function twice", function() {
+        GlobalEnv.set(new Symbol('square'), [new Symbol('lambda'), [new Symbol('x')], [new Symbol('*'), new Symbol('x'), new Symbol('x')]]);
+        expect(evaluate([new Symbol('square'), 2])).toBe(4);
+        expect(evaluate([new Symbol('square'), 2])).toBe(4);
+    });
+
     it("can evaluate begin", function() {
         expect(evaluate([new Symbol('begin'), [new Symbol('define'), new Symbol('x'), 42], [new Symbol('*'), new Symbol('x'), 2]])).toBe(84);
     });

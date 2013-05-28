@@ -148,8 +148,8 @@ function evaluate(s, env) {
         }
         return ret;
     } else {
-        proc = s.shift();
-        s = s.map(function(x) { return evaluate(x, env); });
+        proc = s[0];
+        s = s.slice(1).map(function(x) { return evaluate(x, env); });
         return evaluate(env.lookup(proc), env).apply(null, s);
     }
 }

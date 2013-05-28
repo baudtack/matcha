@@ -153,3 +153,23 @@ function evaluate(s, env) {
         return evaluate(env.lookup(proc), env).apply(null, s);
     }
 }
+
+function console_repl() {
+    var readline = require('readline');
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    var cont = true;
+    rl.setPrompt('> ');
+    rl.prompt();
+    rl.on('line', function(response) {
+        if (response !== '(exit)') {
+            console.log(evaluate(read(response)));
+            rl.prompt();
+        } else {
+            cont = false;
+            rl.close();
+        }
+    });
+}

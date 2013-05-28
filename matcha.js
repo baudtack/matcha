@@ -111,8 +111,8 @@ function read(s) {
 }
 
 function make_lambda(env, arglist, body) {
-    var lambda_env = new Env(env);
     return function() {
+        var lambda_env = new Env(env);
         var args = Array.prototype.slice.call(arguments, 0);
         for (var i = 0; i < args.length; i++) {
             lambda_env.set(arglist[i], args[i]);

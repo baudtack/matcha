@@ -148,9 +148,9 @@ function evaluate(s, env) {
         }
         return ret;
     } else {
-        proc = s[0];
-        s = s.slice(1).map(function(x) { return evaluate(x, env); });
-        return evaluate(env.lookup(proc), env).apply(null, s);
+        var proc = env.lookup(s[0]);
+        var args = s.slice(1).map(function(x) { return evaluate(x, env); });
+        return proc.apply(null, args);
     }
 }
 

@@ -40,6 +40,26 @@ describe("read()", function() {
     });
 });
 
+describe('atomize()', function() {
+    it('can atomize ints', function() {
+        expect(atomize("10")).toBe(10);
+        expect(atomize("100")).toBe(100);
+        expect(atomize("42")).toBe(42);
+    });
+
+    it('can atomize floats', function() {
+        expect(atomize("10.5")).toBe(10.5);
+        expect(atomize("100.199")).toBe(100.199);
+        expect(atomize("42.42")).toBe(42.42);
+    });
+
+    it('can atomize strings', function() {
+        expect(atomize("\"10.5\"")).toBe("10.5");
+        expect(atomize("\"duck\"")).toBe("duck");
+        expect(atomize("\"quack.5\"")).toBe("quack.5");
+    });
+});
+
 describe('Env()', function() {
     it('can set()', function() {
         e = new Env();
@@ -300,5 +320,3 @@ describe('evaluate()', function() {
         expect(evaluate([new Symbol('begin'), [new Symbol('define'), new Symbol('x'), 42], [new Symbol('*'), new Symbol('x'), 2]])).toBe(84);
     });
 });
-
-

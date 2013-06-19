@@ -319,4 +319,13 @@ describe('evaluate()', function() {
     it("can evaluate begin", function() {
         expect(evaluate([new Symbol('begin'), [new Symbol('define'), new Symbol('x'), 42], [new Symbol('*'), new Symbol('x'), 2]])).toBe(84);
     });
+
+    it("can evaluate set!", function() {
+        var e1 = new Env();
+        var x = new Symbol('x');
+        e1.set(x, 10);
+        var e2 = new Env(e1);
+        evaluate([new Symbol('set!'), x, 42], e2);
+        expect(e1.lookup(x)).toBe(42);
+    });
 });

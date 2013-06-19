@@ -36,6 +36,17 @@ function Env(outer) {
     this.set = function(symbol, value) {
         this.local[symbol.s] = value;
     }
+    this.find = function(symbol) {
+        if (typeof this.local[symbol.s] == 'undefined') {
+            if (typeof this.outer == 'undefined') {
+                return 'undefined'
+            } else {
+                return this.outer.find(symbol);
+            }
+        } else {
+            return this;
+        }
+    };
 }
 
 
@@ -134,6 +145,13 @@ function evaluate(s, env) {
         s.shift();
         symbol = s.shift();
         env.set(symbol, evaluate(s, env));
+    } else if(s[0].s == 'set!') {
+        s.shift();
+        symbol = s.shift();
+        e = env.find(symbol);
+        if(e !== 'undefined') {
+            e.set(symbol, s.shift());
+        }
     } else if (s[0].s == 'if') {
         return evaluate((evaluate(s[1], env) ? s[2] : s[3]), env);
     } else if(s[0].s == 'lambda') {

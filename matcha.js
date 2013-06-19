@@ -75,12 +75,10 @@ function tokenize(s) {
 }
 
 function atomize(item) {
-    //need to add float support
-    ip = parseInt(item)
-    if (isNaN(ip) == false) {
-        return ip;
-    } else if (item[0] == '"') {
+    if (item[0] == '"') {
         return item.substring(1, item.length - 1);
+    } else if (isNaN(parseFloat(item)) == false) {
+        return parseFloat(item);
     } else {
         return new Symbol(item);
     }
@@ -155,6 +153,7 @@ function evaluate(s, env) {
 }
 
 function console_repl() {
+    //requires node.js with readline module
     var readline = require('readline');
     var rl = readline.createInterface({
         input: process.stdin,

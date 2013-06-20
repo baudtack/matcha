@@ -80,9 +80,35 @@ GlobalEnv.set(new Symbol('/'), ops_with_multiple_args(function(x, y) { return x 
 
 
 function tokenize(s) {
-    return s.replace(/\(/g, ' ( ').replace(/\)/g, ' )').split(' ').filter(function (item) {
+    var tokens = s.replace(/\(/g, ' ( ').replace(/\)/g, ' )').split(' ').filter(function (item) {
         return item != '';
-        });
+    });
+
+    for(var i = 0; i < tokens.length; i++) {
+        tok = tokens[i];
+        if (typeof tok !== 'undefined') {
+            if(tok[0] === '"' && tok[tok.length-1] !== '"') {
+                cont = true;
+                j = i;
+                while(cont) {
+                    j++;
+                    tok +=  ' ' + tokens[j];
+                    delete tokens[j];
+
+                    if(tok[tok.length-1] === '"') {
+                        cont = false;
+                    }
+                }
+                tokens[i] = tok;
+            }
+        }
+    }
+
+    return tokens.filter(function(item) {
+        if(typeof item !== undefined) {
+            return item;
+        }
+    });
 }
 
 function atomize(item) {

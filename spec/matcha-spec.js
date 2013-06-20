@@ -546,4 +546,9 @@ describe('evaluate() with read()', function() {
         evaluate(read('(set! x 42)'), e2);
         expect(e1.lookup(x)).toBe(42);
     });
+
+    it('can handle strings with spaces in them', function() {
+        evaluate(read('(define x "ducks are nice")'));
+        expect(evaluate(read('x'))).toBe("ducks are nice");
+    });
  });

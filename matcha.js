@@ -23,8 +23,8 @@ function Env(outer) {
     this.outer = outer;
     this.local = [];
     this.lookup = function(symbol) {
-        if (typeof this.local[symbol.s] == 'undefined') {
-            if (typeof this.outer == 'undefined') {
+        if (typeof this.local[symbol.s] === 'undefined') {
+            if (typeof this.outer === 'undefined') {
                 return eval(symbol.s);
             } else {
                 return this.outer.lookup(symbol);
@@ -37,9 +37,9 @@ function Env(outer) {
         this.local[symbol.s] = value;
     }
     this.find = function(symbol) {
-        if (typeof this.local[symbol.s] == 'undefined') {
-            if (typeof this.outer == 'undefined') {
-                return 'undefined'
+        if (typeof this.local[symbol.s] === 'undefined') {
+            if (typeof this.outer === 'undefined') {
+                return undefined;
             } else {
                 return this.outer.find(symbol);
             }
@@ -86,9 +86,9 @@ function tokenize(s) {
 }
 
 function atomize(item) {
-    if (item[0] == '"') {
+    if (item[0] === '"') {
         return item.substring(1, item.length - 1);
-    } else if (isNaN(parseFloat(item)) == false) {
+    } else if (isNaN(parseFloat(item)) === false) {
         return parseFloat(item);
     } else {
         return new Symbol(item);
@@ -96,18 +96,18 @@ function atomize(item) {
 }
 
 function parse(tokens, tree) {
-    if (tokens.length == 0) {
+    if (tokens.length === 0) {
         throw "End of file during parsing";
     }
 
     token = tokens.shift();
-    if (token == '(') {
+    if (token === '(') {
         while (tokens[0] != ')') {
             tree.push(parse(tokens, []));
         }
         tokens.shift();
         return tree;
-    } else if (token == ')') {
+    } else if (token === ')') {
         throw "Parse error";
     } else {
         return atomize(token);
@@ -137,26 +137,28 @@ function evaluate(s, env) {
         return env.lookup(s);
     } else if(!(s instanceof Array)) {
         return s;
-    } else if(s.length == 1) {
+    } else if(s.length === 1) {
         return evaluate(s[0], env);
-    } else if(s[0].s == 'quote') {
+    } else if(s[0].s === 'quote') {
         return s[1];
-    } else if(s[0].s == 'define') {
+    } else if(s[0].s === 'define') {
         s.shift();
         symbol = s.shift();
         env.set(symbol, evaluate(s, env));
-    } else if(s[0].s == 'set!') {
+    } else if(s[0].s === 'set!') {
         s.shift();
         symbol = s.shift();
         e = env.find(symbol);
-        if(e !== 'undefined') {
-            e.set(symbol, s.shift());
+        if(e === undefined) {
+            throw 'symbol ' + symbol.s + ' undefined';
         }
-    } else if (s[0].s == 'if') {
+        e.set(symbol, s.shift());
+
+    } else if (s[0].s === 'if') {
         return evaluate((evaluate(s[1], env) ? s[2] : s[3]), env);
-    } else if(s[0].s == 'lambda') {
+    } else if(s[0].s === 'lambda') {
         return make_lambda(env, s[1], s[2]);
-    }  else if(s[0].s == 'begin') {
+    }  else if(s[0].s === 'begin') {
         s.shift();
         var ret = null;
         for (var i = 0; i < s.length; i++) {

@@ -4,32 +4,44 @@ describe('lame', function() {
     });
 });
 
+describe('new Symbol()', function () {
+    it('creates a new object', function () {
+        expect(new Symbol('x')).toEqual(new Symbol('x'));
+    });
+
+    it('assigns the argument to the s property', function() {
+        var val = 'x';
+        var symb = new Symbol(val);
+        expect(symb.s).toEqual(val);
+    });
+});
+
 describe('read()', function() {
     it('reads simple sexp', function() {
-        expect(read('(alert "test")')).toEqual([ { s: 'alert' }, 'test' ]);
+        expect(read('(alert "test")')).toEqual([ new Symbol('alert'), 'test' ]);
     });
 
     it('reads nested sexp', function() {
-        expect(read('(alert (foo "bar"))')).toEqual([ { s: 'alert' }, [ { s: 'foo' }, 'bar' ] ]);
+        expect(read('(alert (foo "bar"))')).toEqual([ new Symbol('alert'), [ new Symbol( 'foo' ), 'bar' ] ]);
     });
 
     it('reads complex sexp', function() {
         expect(read('(define factorial (lambda(n) (if (= n 0) 1 (* n (factorial (- n 1))))))')).toEqual(
-                           [ { s: 'define' },
-                             { s: 'factorial' },
-                             [ { s: 'lambda' },
-                               [ { s: 'n' } ],
-                               [ { s: 'if' },
-                                 [ { s: '=' },
-                                   { s: 'n' },
+                           [ new Symbol( 'define' ),
+                             new Symbol( 'factorial' ),
+                             [ new Symbol( 'lambda' ),
+                               [ new Symbol( 'n' ) ],
+                               [ new Symbol( 'if' ),
+                                 [ new Symbol( '=' ),
+                                   new Symbol( 'n' ),
                                    0
                                  ],
                                  1,
-                                 [ { s: '*' },
-                                   { s: 'n' },
-                                   [ { s: 'factorial' },
-                                     [ { s: '-' },
-                                       { s: 'n' },
+                                 [ new Symbol( '*' ),
+                                   new Symbol( 'n' ),
+                                   [ new Symbol( 'factorial' ),
+                                     [ new Symbol( '-' ),
+                                       new Symbol( 'n' ),
                                        1
                                      ]
                                    ]

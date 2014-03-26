@@ -7,7 +7,7 @@
     $(document).ready(function() {
       var evald = 0;
       $('#go').click(function() {
-       $('#eval').val(evaluate(read($('#code').val())));
+       $('#eval').text(evaluate(read($('#code').val())));
        evald = evald + 1;
        $('#old').append('<div id="' + evald + '">' + $('#code').val() + '</div>');
        $('#code').val('');

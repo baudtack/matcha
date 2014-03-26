@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Matcha Repl</title>
+  <script type="text/javascript" src="matcha.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var evald = 0;
+      $('#go').click(function() {
+       $('#eval').val(evaluate(read($('#code').val())));
+       evald = evald + 1;
+       $('#old').append('<div id="' + evald + '">' + $('#code').val() + '</div>');
+       $('#code').val('');
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Matcha Repl</h1>
+  <h2>Result</h2>
+  <div id="eval" style="border:solid 2px red;height:40px;width:500px"></div>
+  <h2>Code</h2>
+  <textarea id="code"></textarea>
+  <button type="button" id="go">Go</button>
+  <h2>History</h2>
+  <div id="old"></div>
+</body>
+</html>

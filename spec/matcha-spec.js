@@ -1,17 +1,11 @@
-describe('lame', function() {
-    it('has a lame test here to "fix" a bug in qasmine', function() {
-        expect(true).toBe(true);
-    });
-});
-
 describe('new Symbol()', function () {
     it('creates a new object', function () {
         expect(new Symbol('x')).toEqual(new Symbol('x'));
     });
 
     it('assigns the argument to the s property', function() {
-        var val = 'x';
-        var symb = new Symbol(val);
+        let val = 'x';
+        let symb = new Symbol(val);
         expect(symb.s).toEqual(val);
     });
 });
@@ -333,10 +327,10 @@ describe('evaluate()', function() {
     });
 
     it('can evaluate set!', function() {
-        var e1 = new Env();
-        var x = new Symbol('x');
+        let e1 = new Env();
+        let x = new Symbol('x');
         e1.set(x, 10);
-        var e2 = new Env(e1);
+        let e2 = new Env(e1);
         evaluate([new Symbol('set!'), x, 42], e2);
         expect(e1.lookup(x)).toBe(42);
     });
@@ -353,6 +347,7 @@ describe('evaluate() with read()', function() {
     });
 
     it('can evaluate define', function () {
+        let x = new Symbol('x');
         evaluate(read('(define x 42)'));
         expect(GlobalEnv.lookup(x)).toBe(42);
     });
@@ -551,10 +546,10 @@ describe('evaluate() with read()', function() {
     });
 
     it('can evaluate set!', function() {
-        var e1 = new Env();
-        var x = new Symbol('x');
+        let e1 = new Env();
+        let x = new Symbol('x');
         e1.set(x, 10);
-        var e2 = new Env(e1);
+        let e2 = new Env(e1);
         evaluate(read('(set! x 42)'), e2);
         expect(e1.lookup(x)).toBe(42);
     });
@@ -562,5 +557,10 @@ describe('evaluate() with read()', function() {
     it('can handle strings with spaces in them', function() {
         evaluate(read('(define x "ducks are nice")'));
         expect(evaluate(read('x'))).toBe("ducks are nice");
+    });
+    
+    it('can evaluate begin with lambdas', function() {
+      evaluate(read('(define foo (begin (define x (lambda (y) (+ y 2))) (x 40)))'));
+      expect(evaluate(read('foo'))).toBe(42);
     });
  });

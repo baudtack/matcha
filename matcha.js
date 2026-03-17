@@ -201,6 +201,10 @@ Matcha.GlobalEnv.set(new Matcha.Symbol('+'), Matcha.ops_with_multiple_args(funct
 Matcha.GlobalEnv.set(new Matcha.Symbol('-'), Matcha.ops_with_multiple_args(function(x, y) { return x - y; }));
 Matcha.GlobalEnv.set(new Matcha.Symbol('*'), Matcha.ops_with_multiple_args(function(x, y) { return x * y; }));
 Matcha.GlobalEnv.set(new Matcha.Symbol('/'), Matcha.ops_with_multiple_args(function(x, y) { return x / y; }));
+Matcha.GlobalEnv.set(new Matcha.Symbol('add'), Matcha.GlobalEnv.lookup(new Matcha.Symbol('+')));
+Matcha.GlobalEnv.set(new Matcha.Symbol('sub'), Matcha.GlobalEnv.lookup(new Matcha.Symbol('-')));
+Matcha.GlobalEnv.set(new Matcha.Symbol('mul'), Matcha.GlobalEnv.lookup(new Matcha.Symbol('*')));
+Matcha.GlobalEnv.set(new Matcha.Symbol('div'), Matcha.GlobalEnv.lookup(new Matcha.Symbol('/')));
 
 /*function console_repl() {
     //requires node.js with readline module

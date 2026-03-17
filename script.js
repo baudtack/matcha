@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let old = document.getElementById("old");
       let hist = document.createElement("div");
       
-      resultDiv.textContent = evaluate(read(code));
+      resultDiv.textContent = Matcha.eval(code);
 
       evalCount++;
 

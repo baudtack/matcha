@@ -1,30 +1,19 @@
-<html>
-<head>
-  <title>Matcha Repl</title>
-  <script type="text/javascript" src="matcha.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      var evald = 0;
-      $('#go').click(function() {
-       $('#eval').text(evaluate(read($('#code').val())));
-       evald = evald + 1;
-       $('#old').append('<div id="' + evald + '">' + $('#code').val() + '</div>');
-       $('#code').val('');
-      });
-    });
-  </script>
-</head>
-<body>
-<a href="https://github.com/baudtack/matcha"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
-  <h1>Matcha Repl</h1>
-  <h2>Result</h2>
-  <div id="eval" style="border:solid 2px red;height:40px;width:500px"></div>
-  <h2>Code</h2>
-  <textarea id="code"></textarea>
-  <button type="button" id="go">Go</button>
-  <h2>History</h2>
-  <div id="old"></div>
-  <a href="SpecRunner.html">Run the Tests</a>
-</body>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Matcha Repl</title>
+    <script src="matcha.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <h1>Matcha Repl</h1>
+    <h2>Result</h2>
+    <div id="result" style="border:solid 2px red;height:40px;width:500px"></div>
+    <h2>Code</h2>
+    <textarea id="code"></textarea>
+    <button type="button" id="eval">Eval</button>
+    <h2>History</h2>
+    <div id="old"></div>
+    <a href="SpecRunner.html">Run the Tests</a>
+  </body>
 </html>
